@@ -1,11 +1,14 @@
+'use strict';
+
+const packageJson = require('./package.json');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    accordion: {
+    [packageJson.name]: {
       import: './src/index.ts',
       library: {
-        name: 'Accordion',
+        name: packageJson.name.replace(/^.|-./g, s => s.toUpperCase()).replace('-', ''),
         type: 'umd',
       },
     },
@@ -29,12 +32,12 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: `${__dirname}/test/index.html`,
+      template: `${__dirname}/public/index.html`,
     }),
   ],
   devServer: {
     static: {
-      directory: `${__dirname}/test/`,
+      directory: `${__dirname}/public/`,
     },
     compress: true,
     port: 8080,
