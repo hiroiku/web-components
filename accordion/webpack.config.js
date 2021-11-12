@@ -1,6 +1,8 @@
 'use strict';
 
 const packageJson = require('./package.json');
+const pageTitle = packageJson.name.replace(/^.|-./g, s => s.toUpperCase()).replace('-', '');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -8,7 +10,7 @@ module.exports = {
     [packageJson.name]: {
       import: './src/index.ts',
       library: {
-        name: packageJson.name.replace(/^.|-./g, s => s.toUpperCase()).replace('-', ''),
+        name: pageTitle,
         type: 'umd',
       },
     },
@@ -32,6 +34,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      title: pageTitle,
       template: `${__dirname}/public/index.html`,
     }),
   ],
