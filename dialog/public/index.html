@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+
+    <style>
+      .dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .dialog:not(.is-active) {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <button class="handle">開く</button>
+
+    <div class="dialog">
+      <div class="dialog-window">
+        <button class="dialog-accept">OK</button>
+        <button class="dialog-cancel">Cancel</button>
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        const dialogElement = document.querySelector('.dialog');
+
+        const dialog = new Dialog(dialogElement);
+        dialog.addAcceptButton(dialogElement.querySelector('.dialog-accept'));
+        dialog.addCancelButton(dialogElement.querySelector('.dialog-cancel'));
+
+        const handleElement = document.querySelector('.handle');
+        handleElement.addEventListener('click', async () => {
+          const result = await dialog.open();
+
+          if (result) {
+            console.log('accepted');
+          } else {
+            console.log('canceled');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
