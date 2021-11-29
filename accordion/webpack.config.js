@@ -1,21 +1,17 @@
 'use strict';
 
 const packageJson = require('./package.json');
-const pageTitle = packageJson.name.replace(/^.|-./g, s => s.toUpperCase()).replace('-', '');
+const libraryName = packageJson.name.replace(/^.|-./g, s => s.toUpperCase()).replace('-', '');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: {
-    [packageJson.name]: {
-      import: './src/index.ts',
-      library: {
-        name: pageTitle,
-        type: 'umd',
-      },
-    },
-  },
+  entry: './src/index.ts',
   output: {
+    library: libraryName,
+    libraryTarget: 'umd',
+    libraryExport: 'default',
+    umdNamedDefine: true,
     path: `${__dirname}/dist/`,
     filename: '[name].min.js',
   },
@@ -31,10 +27,11 @@ module.exports = {
     alias: {
       '@': `${__dirname}/src/`,
     },
+    extensions: ['.ts', '.js'],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: pageTitle,
+      title: libraryName,
       template: `${__dirname}/public/index.html`,
     }),
   ],
