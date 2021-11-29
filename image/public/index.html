@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+
+  <body>
+    <script>
+      window.addEventListener('DOMContentLoaded', async () => {
+        const { Avif, Bmp, Gif, Png, Webp } = Feature;
+        console.log('image/avif', await Avif.features());
+        console.log('image/bmp', await Bmp.features());
+        console.log('image/gif', await Gif.features());
+        console.log('image/png', await Png.features());
+        console.log('image/webp', await Webp.features());
+      });
+    </script>
+  </body>
+</html>
