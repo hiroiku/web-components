@@ -43,15 +43,19 @@
         dialog.addAcceptButton(dialogElement.querySelector('.dialog-accept'));
         dialog.addCancelButton(dialogElement.querySelector('.dialog-cancel'));
 
+        dialog.addEventListener('accept', () => {
+          console.log('accept');
+        });
+
+        dialog.addEventListener('cancel', () => {
+          console.log('cancel');
+        });
+
         const handleElement = document.querySelector('.handle');
         handleElement.addEventListener('click', async () => {
-          const result = await dialog.open();
-
-          if (result) {
-            console.log('accepted');
-          } else {
-            console.log('canceled');
-          }
+          // dialog.open();
+          const result = await dialog.confirm();
+          console.log(result);
         });
       });
     </script>

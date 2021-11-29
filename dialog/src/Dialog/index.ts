@@ -2,6 +2,7 @@ interface DialogOptions {
   activeClass?: string;
 }
 
+type CloseEvent = 'accept' | 'cancel';
 type OnCloseEventListener = () => void;
 
 export class Dialog {
@@ -17,58 +18,67 @@ export class Dialog {
     this.activeClass = options?.activeClass ?? 'is-active';
   }
 
+  public addEventListener(event: 'accept', listener: OnCloseEventListener): void;
+  public addEventListener(event: 'cancel', listener: OnCloseEventListener): void;
+  public addEventListener(event: CloseEvent, listener: OnCloseEventListener) {
+    if (event === 'accept') {
+      this.onAcceptedEventListeners.push(listener);
+    } else if (event === 'cancel') {
+      this.onCanceledEventListeners.push(listener);
+    }
+  }
+
   public addAcceptButton(element: Element) {
+    element.addEventListener('click', event => {
+      this.close();
+      this.onAcceptedEventListeners.forEach(listener => listener());
+      event.stopPropagation();
+    });
     this.acceptButtonElements.push(element);
   }
 
   public addCancelButton(element: Element) {
+    element.addEventListener('click', event => {
+      this.close();
+      this.onCanceledEventListeners.forEach(listener => listener());
+      event.stopPropagation();
+    });
     this.cancelButtonElements.push(element);
   }
 
   public open() {
     this.dialogElement.classList.add(this.activeClass);
-
-    return new Promise<boolean>(async resolve => {
-      this.accept().then(() => resolve(true));
-      this.cancel().then(() => resolve(false));
-    });
-  }
-
-  public async accept() {
-    return new Promise<void>(resolve => {
-      this.acceptButtonElements.forEach(element => {
-        element.addEventListener(
-          'click',
-          event => {
-            this.close();
-            this.onAcceptedEventListeners.forEach(listener => listener());
-            resolve();
-            event.stopPropagation();
-          },
-          { once: true },
-        );
-      });
-    });
-  }
-
-  public async cancel() {
-    return new Promise<void>(resolve => {
-      this.cancelButtonElements.forEach(element => {
-        element.addEventListener(
-          'click',
-          event => {
-            this.close();
-            this.onCanceledEventListeners.forEach(listener => listener());
-            resolve();
-            event.stopPropagation();
-          },
-          { once: true },
-        );
-      });
-    });
   }
 
   protected close() {
     this.dialogElement.classList.remove(this.activeClass);
+  }
+
+  public confirm() {
+    this.open();
+
+    return new Promise<boolean>(resolve => {
+      this.acceptButtonElements.forEach(element => {
+        element.addEventListener(
+          'click',
+          event => {
+            resolve(true);
+            event.stopPropagation();
+          },
+          { once: true },
+        );
+      });
+
+      this.cancelButtonElements.forEach(element => {
+        element.addEventListener(
+          'click',
+          event => {
+            resolve(false);
+            event.stopPropagation();
+          },
+          { once: true },
+        );
+      });
+    });
   }
 }
