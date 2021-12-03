@@ -12,11 +12,14 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
         z-index: 100;
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+
+      .dialog.is-modal {
+        background: rgba(0, 0, 0, 0.5);
       }
 
       .dialog:not(.is-active) {
@@ -26,7 +29,8 @@
   </head>
 
   <body>
-    <button class="handle">開く</button>
+    <button class="open-handle">open</button>
+    <button class="confirm-handle">confirm</button>
 
     <div class="dialog">
       <div class="dialog-window">
@@ -39,23 +43,40 @@
       window.addEventListener('DOMContentLoaded', () => {
         const dialogElement = document.querySelector('.dialog');
 
-        const dialog = new Dialog(dialogElement);
+        const dialog = new Dialog(dialogElement, {
+          cancelable: true,
+        });
         dialog.addAcceptButton(dialogElement.querySelector('.dialog-accept'));
         dialog.addCancelButton(dialogElement.querySelector('.dialog-cancel'));
 
         dialog.addEventListener('accept', () => {
           console.log('accept');
         });
-
+        dialog.addEventListener('accept', () => {
+          console.log('accept2');
+        });
         dialog.addEventListener('cancel', () => {
           console.log('cancel');
         });
 
-        const handleElement = document.querySelector('.handle');
-        handleElement.addEventListener('click', async () => {
-          // dialog.open();
+        const openHandleElement = document.querySelector('.open-handle');
+        openHandleElement.addEventListener('click', () => {
+          dialog.open();
+
+          // setTimeout(() => {
+          //   dialog.cancel();
+          // }, 3000);
+        });
+
+        const confirmHandleElement = document.querySelector('.confirm-handle');
+        confirmHandleElement.addEventListener('click', async () => {
           const result = await dialog.confirm();
-          console.log(result);
+
+          if (result) {
+            console.log('ACCEPT');
+          } else {
+            console.log('CANCEL');
+          }
         });
       });
     </script>
