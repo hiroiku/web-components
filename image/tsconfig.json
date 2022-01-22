@@ -5,6 +5,9 @@
     "strict": true,
     "sourceMap": true,
     "moduleResolution": "node",
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "dist",
     "lib": ["esnext", "dom"],
     "baseUrl": "./",
     "paths": {
